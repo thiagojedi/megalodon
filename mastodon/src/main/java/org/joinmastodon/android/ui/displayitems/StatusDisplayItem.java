@@ -15,6 +15,7 @@ import org.joinmastodon.android.fragments.ThreadFragment;
 import org.joinmastodon.android.model.Account;
 import org.joinmastodon.android.model.Attachment;
 import org.joinmastodon.android.model.DisplayItemsParent;
+import org.joinmastodon.android.model.Filter;
 import org.joinmastodon.android.model.Notification;
 import org.joinmastodon.android.model.Poll;
 import org.joinmastodon.android.model.Status;
@@ -73,6 +74,15 @@ public abstract class StatusDisplayItem{
 			case GAP -> new GapStatusDisplayItem.Holder(activity, parent);
 			case EXTENDED_FOOTER -> new ExtendedFooterStatusDisplayItem.Holder(activity, parent);
 		};
+	}
+
+	public static ArrayList<StatusDisplayItem> buildFilteredItems(BaseStatusListFragment fragment, Status status, DisplayItemsParent parentObject, Filter appliedFilter) {
+		ArrayList<StatusDisplayItem> items=new ArrayList<>();
+		String parentID=parentObject.getID();
+
+		items.add(new TextStatusDisplayItem(parentID, "Filtered: "+appliedFilter.title, fragment, status));
+
+		return items;
 	}
 
 	public static ArrayList<StatusDisplayItem> buildItems(BaseStatusListFragment fragment, Status status, String accountID, DisplayItemsParent parentObject, Map<String, Account> knownAccounts, boolean inset, boolean addFooter, Notification notification){

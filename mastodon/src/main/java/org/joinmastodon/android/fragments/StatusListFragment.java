@@ -2,6 +2,8 @@ package org.joinmastodon.android.fragments;
 
 import android.os.Bundle;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.otto.Subscribe;
 
 import org.joinmastodon.android.E;
@@ -11,24 +13,38 @@ import org.joinmastodon.android.events.StatusCountersUpdatedEvent;
 import org.joinmastodon.android.events.StatusCreatedEvent;
 import org.joinmastodon.android.events.StatusDeletedEvent;
 import org.joinmastodon.android.events.StatusUpdatedEvent;
+import org.joinmastodon.android.model.Filter;
+import org.joinmastodon.android.model.FilterResult;
 import org.joinmastodon.android.model.Status;
 import org.joinmastodon.android.ui.displayitems.ExtendedFooterStatusDisplayItem;
 import org.joinmastodon.android.ui.displayitems.FooterStatusDisplayItem;
 import org.joinmastodon.android.ui.displayitems.StatusDisplayItem;
 import org.parceler.Parcels;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import androidx.recyclerview.widget.RecyclerView;
 import me.grishka.appkit.Nav;
 
 public abstract class StatusListFragment extends BaseStatusListFragment<Status>{
 	protected EventListener eventListener=new EventListener();
 
-	protected List<StatusDisplayItem> buildDisplayItems(Status s){
+	protected List<StatusDisplayItem> buildDisplayItems(Status s) {
+		List<FilterResult> filtered=s.filtered;
+		if(filtered!=null&&!filtered.isEmpty()){
+			Optional<Filter> appliedFilter=filtered.stream()
+					.map(filterResult->filterResult.filter)
+					.filter(f->f.context.contains(filterContext))
+					.filter(f->f.expiresAt == null || f.expiresAt.isAfter(Instant.now()))
+					.filter(f->f.filterAction == Filter.FilterAction.WARN)
+					.findFirst();
+			if(appliedFilter.isPresent())
+				return StatusDisplayItem.buildFilteredItems(this, s, s, appliedFilter.get());
+		}
 		return StatusDisplayItem.buildItems(this, s, accountID, s, knownAccounts, false, true, null);
 	}
 
