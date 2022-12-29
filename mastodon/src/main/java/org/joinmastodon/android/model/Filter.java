@@ -4,12 +4,10 @@ import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.joinmastodon.android.api.ObjectValidationException;
 import org.joinmastodon.android.api.RequiredField;
 import org.parceler.Parcel;
 
 import java.time.Instant;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -19,27 +17,15 @@ public class Filter extends BaseModel{
 	public String id;
 	@RequiredField
 	public String phrase;
-	public transient EnumSet<FilterContext> context=EnumSet.noneOf(FilterContext.class);
 	public Instant expiresAt;
 	public boolean irreversible;
 	public boolean wholeWord;
 	public FilterAction filterAction;
+	public String title;
 
-	@SerializedName("context")
-	private List<FilterContext> _context;
+	public List<FilterContext> context;
 
 	private transient Pattern pattern;
-
-	@Override
-	public void postprocess() throws ObjectValidationException{
-		super.postprocess();
-		if(_context==null)
-			throw new ObjectValidationException();
-		for(FilterContext c:_context){
-			if(c!=null)
-				context.add(c);
-		}
-	}
 
 	public boolean matches(CharSequence text){
 		if(TextUtils.isEmpty(text))

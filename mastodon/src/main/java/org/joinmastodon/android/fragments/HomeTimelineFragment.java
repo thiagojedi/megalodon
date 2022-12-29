@@ -65,6 +65,7 @@ public class HomeTimelineFragment extends StatusListFragment{
 	private String maxID;
 
 	public HomeTimelineFragment(){
+		filterContext=Filter.FilterContext.HOME;
 		setListLayoutId(R.layout.recycler_fragment_with_fab);
 	}
 
@@ -188,9 +189,9 @@ public class HomeTimelineFragment extends StatusListFragment{
 							result.get(result.size()-1).hasGapAfter=true;
 							toAdd=result;
 						}
-						List<Filter> filters=AccountSessionManager.getInstance().getAccount(accountID).wordFilters.stream().filter(f->f.context.contains(Filter.FilterContext.HOME)).collect(Collectors.toList());
+						List<Filter> filters=AccountSessionManager.getInstance().getAccount(accountID).wordFilters.stream().filter(f->f.context.contains(filterContext)).collect(Collectors.toList());
 						if(!filters.isEmpty()){
-							toAdd=toAdd.stream().filter(new StatusFilterPredicate(filters)).collect(Collectors.toList());
+							toAdd=toAdd.stream().filter(new StatusFilterPredicate(filters, filterContext)).collect(Collectors.toList());
 						}
 						if(!toAdd.isEmpty()){
 							prependItems(toAdd, true);
@@ -265,7 +266,7 @@ public class HomeTimelineFragment extends StatusListFragment{
 							List<StatusDisplayItem> targetList=displayItems.subList(gapPos, gapPos+1);
 							targetList.clear();
 							List<Status> insertedPosts=data.subList(gapPostIndex+1, gapPostIndex+1);
-							StatusFilterPredicate filterPredicate=new StatusFilterPredicate(accountID, Filter.FilterContext.HOME);
+							StatusFilterPredicate filterPredicate=new StatusFilterPredicate(accountID, filterContext);
 							for(Status s:result){
 								if(idsBelowGap.contains(s.id))
 									break;

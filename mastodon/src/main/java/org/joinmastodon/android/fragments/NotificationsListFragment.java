@@ -2,9 +2,9 @@ package org.joinmastodon.android.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.otto.Subscribe;
 
@@ -14,6 +14,7 @@ import org.joinmastodon.android.api.requests.markers.SaveMarkers;
 import org.joinmastodon.android.api.session.AccountSessionManager;
 import org.joinmastodon.android.events.PollUpdatedEvent;
 import org.joinmastodon.android.events.RemoveAccountPostsEvent;
+import org.joinmastodon.android.model.Filter;
 import org.joinmastodon.android.model.Notification;
 import org.joinmastodon.android.model.PaginatedResponse;
 import org.joinmastodon.android.model.Status;
@@ -32,7 +33,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import androidx.recyclerview.widget.RecyclerView;
 import me.grishka.appkit.Nav;
 import me.grishka.appkit.api.SimpleCallback;
 import me.grishka.appkit.utils.V;
@@ -41,6 +41,10 @@ public class NotificationsListFragment extends BaseStatusListFragment<Notificati
 	private boolean onlyMentions;
 	private boolean onlyPosts;
 	private String maxID;
+
+	public NotificationsListFragment(){
+		filterContext=Filter.FilterContext.NOTIFICATIONS;
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState){

@@ -57,7 +57,8 @@ public class CacheController{
 		cancelDelayedClose();
 		databaseThread.postRunnable(()->{
 			try{
-				List<Filter> filters=AccountSessionManager.getInstance().getAccount(accountID).wordFilters.stream().filter(f->f.context.contains(Filter.FilterContext.HOME)).collect(Collectors.toList());
+				Filter.FilterContext filterContext=Filter.FilterContext.HOME;
+				List<Filter> filters=AccountSessionManager.getInstance().getAccount(accountID).wordFilters.stream().filter(f->f.context.contains(filterContext)).collect(Collectors.toList());
 				if(!forceReload){
 					SQLiteDatabase db=getOrOpenDatabase();
 					try(Cursor cursor=db.query("home_timeline", new String[]{"json", "flags"}, maxID==null ? null : "`id`<?", maxID==null ? null : new String[]{maxID}, null, null, "`id` DESC", count+"")){
@@ -90,7 +91,7 @@ public class CacheController{
 						.setCallback(new Callback<>(){
 							@Override
 							public void onSuccess(List<Status> result){
-								callback.onSuccess(new CacheablePaginatedResponse<>(result.stream().filter(new StatusFilterPredicate(filters)).collect(Collectors.toList()), result.isEmpty() ? null : result.get(result.size()-1).id, false));
+								callback.onSuccess(new CacheablePaginatedResponse<>(result.stream().filter(new StatusFilterPredicate(filters, filterContext)).collect(Collectors.toList()), result.isEmpty() ? null : result.get(result.size()-1).id, false));
 								putHomeTimeline(result, maxID==null);
 							}
 

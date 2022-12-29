@@ -28,6 +28,10 @@ import me.grishka.appkit.api.SimpleCallback;
 public class ThreadFragment extends StatusListFragment{
 	private Status mainStatus;
 
+	public ThreadFragment(){
+		filterContext=Filter.FilterContext.THREAD;
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);

@@ -18,6 +18,11 @@ import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.widget.Toolbar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import org.joinmastodon.android.E;
 import org.joinmastodon.android.GlobalUserPreferences;
 import org.joinmastodon.android.R;
@@ -26,6 +31,7 @@ import org.joinmastodon.android.api.requests.polls.SubmitPollVote;
 import org.joinmastodon.android.events.PollUpdatedEvent;
 import org.joinmastodon.android.model.Account;
 import org.joinmastodon.android.model.DisplayItemsParent;
+import org.joinmastodon.android.model.Filter;
 import org.joinmastodon.android.model.Poll;
 import org.joinmastodon.android.model.Relationship;
 import org.joinmastodon.android.model.Status;
@@ -52,10 +58,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import me.grishka.appkit.api.Callback;
 import me.grishka.appkit.api.ErrorResponse;
 import me.grishka.appkit.fragments.BaseRecyclerFragment;
@@ -74,6 +76,8 @@ public abstract class BaseStatusListFragment<T extends DisplayItemsParent> exten
 	protected HashMap<String, Account> knownAccounts=new HashMap<>();
 	protected HashMap<String, Relationship> relationships=new HashMap<>();
 	protected Rect tmpRect=new Rect();
+	protected Filter.FilterContext filterContext=Filter.FilterContext.PUBLIC;
+
 
 	public BaseStatusListFragment(){
 		super(20);
